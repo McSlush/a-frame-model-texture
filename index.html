@@ -1,0 +1,50 @@
+<html>
+  <head>
+    <script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
+    <script>
+      AFRAME.registerComponent("boom-texture", {
+        init: function() {
+          var el = this.el;
+          var tex = new THREE.TextureLoader().load('model/boombox2/BoomBox_baseColor.png');
+          el.addEventListener('model-loaded', function (e) {
+            e.detail.model.traverse(function(node) {
+              if (node.isMesh) node.material.map = tex;
+            });
+          });
+          el.addEventListener('click', function (e) {
+            console.log("yepp!");
+          });
+        },
+      });
+
+      AFRAME.registerComponent("add-click", {
+        init: function() {
+          var el = this.el;
+
+          el.addEventListener('click', function (e) {
+            console.log("yepp!");
+          });
+        },
+      });
+
+    </script>
+  </head>
+  <body>
+    <a-scene>
+    <a-assets>
+      <a-asset-item id="boombox1" src="model/boombox1/BoomBox.gltf"></a-asset-item>
+      <a-asset-item id="boombox2" src="model/boombox2/BoomBox.gltf"></a-asset-item>
+
+      <a-mixin id="boombox1-mixin" gltf-model="#boombox1" scale="50 50 50" position="-1 0 -4"></a-mixin>
+      <a-mixin id="boombox2-mixin" gltf-model="#boombox2" scale="50 50 50" position="1 0 -4"></a-mixin>
+    </a-assets>
+      <a-camera>
+        <a-cursor></a-cursor>
+      </a-camera>
+    <a-entity id="boom1" add-click boom-texture gltf-model="#boombox1"  scale="50 50 50" position="-1 0 -4"></a-entity>
+    <a-entity mixin="boombox2-mixin" ></a-entity>
+
+    <a-box add-click color="tomato" depth="2" height="4" width="0.5" position="0 1 -4"></a-box>
+  </a-scene>
+  </body>
+</html>
