@@ -3,22 +3,48 @@
       <script src="https://rawgit.com/aframevr/aframe/3035117/dist/aframe-master.min.js"></script>
     <script>
       AFRAME.registerComponent("boom-texture", {
+        schema: {
+          textures: {default: []},
+          texture: {default: "model/boombox/BoomBox_baseColor.png"},
+        },
+
         init: function() {
           var el = this.el;
-          var tex = new THREE.TextureLoader().load('model/boombox2/BoomBox_baseColor.png');
-          var em = "";
-          el.addEventListener('model-loaded', function (e) {
+          var textures = this.data.textures;
+          var texture = this.data.texture;
+          var material = "";
 
+          textures.push(new THREE.TextureLoader().load('model/boombox/BoomBox_baseColor.png'));
+          textures.push(new THREE.TextureLoader().load('model/boombox/BoomBox_occlusionRoughnessMetallic.png'));
+
+          el.addEventListener('model-loaded', function (e) {
             e.detail.model.traverse(function(node) {
-              if (node.isMesh) em =node.material.map ;
+              if (node.isMesh) {
+                material = node.material.map ;
+              }
             });
           });
+
           el.addEventListener('click', function (e) {
-            console.log("yepp!", em.image);
-            console.log(tex)
-            em.image.setAttribute("src",tex.image.getAttribute("src"));
+            //console.log(material.image);
+            //console.log("current", material.image.getAttribute("src"))
+            //console.log("tex", textures[0].image.getAttribute("src"))
+            //console.log("src", material.image.getAttribute("src"))
+            var currentImg= material.image;
+            console.log(currentImg.getAttribute("src"));
+            console.log(textures[0].image.getAttribute("src"));
+            if(currentImg.getAttribute("src") != textures[1].image.getAttribute("src")) {
+              texture = textures[1].image.getAttribute("src");
+              currentImg.setAttribute("src", texture);
+            } else {
+              texture = textures[0].image.getAttribute("src");
+              currentImg.setAttribute("src", texture);
+            }
           });
+
+
         },
+
       });
 
     </script>
@@ -26,19 +52,13 @@
   <body>
     <a-scene>
     <a-assets>
-      <a-asset-item id="boombox1" src="model/boombox1/BoomBox.gltf"></a-asset-item>
-      <a-asset-item id="boombox2" src="model/boombox2/BoomBox.gltf"></a-asset-item>
-
-      <a-mixin id="boombox1-mixin" gltf-model="#boombox1" scale="50 50 50" position="-1 0 -4"></a-mixin>
-      <a-mixin id="boombox2-mixin" gltf-model="#boombox2" scale="50 50 50" position="1 0 -4"></a-mixin>
+      <a-asset-item id="boombox1" src="model/boombox/BoomBox.gltf"></a-asset-item>
     </a-assets>
       <a-camera>
         <a-cursor></a-cursor>
       </a-camera>
-    <a-entity id="boom1" boom-texture gltf-model="#boombox1"  scale="50 50 50" position="-1 0 -4"></a-entity>
-    <a-entity mixin="boombox2-mixin" ></a-entity>
+    <a-entity id="boom1" boom-texture gltf-model="#boombox1"  scale="50 50 50" position="0 2 -4"></a-entity>
 
-    <a-box color="tomato" depth="2" height="4" width="0.5" position="0 1 -4"></a-box>
   </a-scene>
   </body>
 </html>
