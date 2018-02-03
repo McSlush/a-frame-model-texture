@@ -1,18 +1,22 @@
 <html>
   <head>
-    <script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
+      <script src="https://rawgit.com/aframevr/aframe/3035117/dist/aframe-master.min.js"></script>
     <script>
       AFRAME.registerComponent("boom-texture", {
         init: function() {
           var el = this.el;
           var tex = new THREE.TextureLoader().load('model/boombox2/BoomBox_baseColor.png');
+          var em = "";
           el.addEventListener('model-loaded', function (e) {
+
             e.detail.model.traverse(function(node) {
-              if (node.isMesh) node.material.map = tex;
+              if (node.isMesh) em =node.material.map ;
             });
           });
           el.addEventListener('click', function (e) {
-            console.log("yepp!");
+            console.log("yepp!", em.image);
+            console.log(tex)
+            em.image.setAttribute("src",tex.image.getAttribute("src"));
           });
         },
       });
