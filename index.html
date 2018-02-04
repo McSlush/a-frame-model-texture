@@ -37,8 +37,9 @@
 
           this.el.addEventListener("mousedown", function() {
             var xPos;
-            for(var i = 0; i < textures.length; i++) {
-              xPos = -0.001*(textures.length+1)*textures.length + 0.0002/0.015*i;
+            var tLength = textures.length;
+            for(var i = 0; i < tLength; i++) {
+              xPos = -0.001*(tLength+1)*tLength + 0.0002/0.015 * i;
               hiddenTextureSelector[i].setAttribute("position", {x: xPos, y: 0.015, z: 0});
               hiddenTextureSelector[i].setAttribute("visible", true);
             }
