@@ -1,11 +1,19 @@
 <html>
   <head>
       <script src="https://rawgit.com/aframevr/aframe/3035117/dist/aframe-master.min.js"></script>
+      <script src="https://unpkg.com/aframe-event-set-component@3.0.3/dist/aframe-event-set-component.min.js"></script>
     <script>
 
       var material = null;
       var objectToTexture = null;
       var textures = [];
+
+      function setTextures() {
+        textures.push('model/boombox/BoomBox_baseColor.png');
+        textures.push('model/boombox/BoomBox_occlusionRoughnessMetallic.png');
+        textures.push('model/boombox/BoomBox_normal.png');
+        textures.push('model/boombox/BoomBox_normal.png');
+      }
 
       AFRAME.registerComponent("boom-texture", {
         schema: {
@@ -14,13 +22,10 @@
 
         init: function() {
           var el = this.el;
-          textures = this.data.textures;
+          var hiddenTextureSelector = document.querySelectorAll(".hiddenTextureSelector");
           objectToTexture = this.el;
 
-          var voxels = [];
-
-          textures.push(new THREE.TextureLoader().load('model/boombox/BoomBox_baseColor.png'));
-          textures.push(new THREE.TextureLoader().load('model/boombox/BoomBox_occlusionRoughnessMetallic.png'));
+          setTextures();
 
           el.addEventListener('model-loaded', function (e) {
             e.detail.model.traverse(function(node) {
@@ -31,88 +36,74 @@
           });
 
           this.el.addEventListener("mousedown", function() {
-            var newVoxelEl = null;
             for(var i = 0; i < textures.length; i++) {
-              newVoxelEl = document.createElement("a-entity");
-              newVoxelEl.setAttribute("mixin", "voxel"+(i+1));
-              newVoxelEl.setAttribute('position', { x: i*0.015, y: 0.01, z: 0 });
-              this.appendChild(newVoxelEl);
-              voxels[i] = newVoxelEl;
+              hiddenTextureSelector[i].setAttribute("position", {x: -0.001*(textures.length+1)*textures.length + 0.0002/0.015*i, y: 0.015, z: 0});
+              hiddenTextureSelector[i].setAttribute("visible", true);
             }
           });
 
-            this.el.addEventListener("mouseup", function() {
+          this.el.addEventListener("mouseup", function() {
               if(textures.length != 0){
-                  for(var i = 0; i < voxels.length; i++) {
-                      if(voxels[i].parentNode != null) {
-                      voxels[i].parentNode.removeChild(voxels[i]);
-                      }
+                  for(var i = 0; i < textures.length; i++) {
+                    hiddenTextureSelector[i].setAttribute("visible", false);
                   }
               }
             });
-
-
-/*
-            AFRAME.registerComponent("get-texture-type", {
-                init: function() {
-                    this.el.addEventListener("mouseup", function() {
-                        var texture = this.getAttribute("class");
-                        objectToTexture.setAttribute("material", "src", "#" + texture);
-                        objectToTexture.setAttribute("color", "white");
-
-                    })
-                }
-            });
-
-          el.addEventListener('click', function (e) {
-            var currentImg = material.image;
-            if(currentImg.getAttribute("src") == textures[1].image.getAttribute("src")) {
-              currentImg.setAttribute("src", textures[0].image.getAttribute("src"));
-            } else {
-              currentImg.setAttribute("src", textures[1].image.getAttribute("src"));
-            }
-          });*/
         },
       });
 
       AFRAME.registerComponent("get-texture-type", {
         init: function() {
           var el = this.el;
+          var voxels = [];
+          voxel = document.querySelectorAll(".voxel");
+
+          el.addEventListener('model-loaded', function (e) {
+            e.detail.model.traverse(function(node) {
+              if (node.isMesh) {
+                material = node.material.map ;
+              }
+            });
+          });
 
           this.el.addEventListener("mouseup", function(){
             var currentImg = material.image;
-            console.log(el.components.material.data.src,textures[0].image.getAttribute("src"))
             var selectedTexture = el.components.material.data.src;
-            switch (selectedTexture) {
-              case textures[0].image.getAttribute("src"):
-                currentImg.setAttribute("src", textures[0].image.getAttribute("src"));
-                break;
-              case textures[1].image.getAttribute("src"):
-                currentImg.setAttribute("src", textures[1].image.getAttribute("src"));
-                break;
-              default:
-                break;
-
+            for(var i = 0; i < textures.length; i++) {
+              if(selectedTexture == textures[i]) {
+                currentImg.setAttribute("src", textures[i]);
+              }
             }
           });
+
         }
+
       });
 
 
     </script>
   </head>
   <body>
-    <a-scene>
+    <a-scene stats>
     <a-assets>
-      <a-mixin id="voxel1" get-texture-type material="src:model/boombox/BoomBox_baseColor.png;" geometry="primitive: box; height: 0.01; width: 0.01; depth: 0.01;"></a-mixin>
-      <a-mixin id="voxel2" get-texture-type material="src:model/boombox/BoomBox_occlusionRoughnessMetallic.png;" geometry="primitive: box; height: 0.01; width: 0.01; depth: 0.01;"></a-mixin>
+      <a-mixin id="voxel1" class="voxel" get-texture-type material="src:model/boombox/BoomBox_baseColor.png;" geometry="primitive: box; height: 0.01; width: 0.01; depth: 0.01;"></a-mixin>
+      <a-mixin id="voxel2" class="voxel" get-texture-type  material="src:model/boombox/BoomBox_occlusionRoughnessMetallic.png;" geometry="primitive: box; height: 0.01; width: 0.01; depth: 0.01;"></a-mixin>
+      <a-mixin id="voxel3" class="voxel" get-texture-type material="src:model/boombox/BoomBox_normal.png;" geometry="primitive: box; height: 0.01; width: 0.01; depth: 0.01;"></a-mixin>
+      <a-mixin id="voxel4" class="voxel" get-texture-type material="src:model/boombox/BoomBox_normal.png;" geometry="primitive: box; height: 0.01; width: 0.01; depth: 0.01;"></a-mixin>
       <a-asset-item id="boombox1" src="model/boombox/BoomBox.gltf"></a-asset-item>
     </a-assets>
       <a-camera>
         <a-cursor></a-cursor>
       </a-camera>
-    <a-entity id="boom1" boom-texture gltf-model="#boombox1"  scale="50 50 50" position="0 2 -4"></a-entity>
+    <a-entity id="boom1" boom-texture gltf-model="#boombox1"  scale="50 50 50" position="0 2 -4">
+        <a-box class="hiddenTextureSelector" mixin="voxel1" visible="false"></a-box>
+        <a-box class="hiddenTextureSelector" mixin="voxel2" visible="false"></a-box>
+        <a-box class="hiddenTextureSelector" mixin="voxel3" visible="false"></a-box>
+        <a-box class="hiddenTextureSelector" mixin="voxel4" visible="false"></a-box>
+    </a-entity>
+
 
   </a-scene>
   </body>
+
 </html>
