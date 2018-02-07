@@ -89,16 +89,16 @@
   <body>
     <a-scene stats>
     <a-assets>
-      <a-mixin id="voxel1" class="voxel" get-texture-type material="src:model/boombox/BoomBox_baseColor.png;" geometry="primitive: box; height: 0.01; width: 0.01; depth: 0.01;"></a-mixin>
+      <a-mixin id="voxel1" class="voxel" get-texture-type material="src:model/boombox/BoomBox_baseColor.png;" geometry="primitive: sphere; radius: 0.005;"></a-mixin>
       <a-mixin id="voxel2" class="voxel" get-texture-type  material="src:model/boombox/BoomBox_occlusionRoughnessMetallic.png;" geometry="primitive: box; height: 0.01; width: 0.01; depth: 0.01;"></a-mixin>
       <a-mixin id="voxel3" class="voxel" get-texture-type material="src:model/boombox/BoomBox_normal.png;" geometry="primitive: box; height: 0.01; width: 0.01; depth: 0.01;"></a-mixin>
-      <a-mixin id="voxel4" class="voxel" get-texture-type material="src:model/boombox/BoomBox_emissive.png;" geometry="primitive: box; height: 0.01; width: 0.01; depth: 0.01;"></a-mixin>
+      <a-mixin id="voxel4" class="voxel" get-texture-type material="src:model/boombox/BoomBox_emissive.png;" geometry="primitive: sphere; radius: 0.005;"></a-mixin>
       <a-asset-item id="boombox1" src="model/boombox/BoomBox.gltf"></a-asset-item>
     </a-assets>
       <a-camera>
         <a-cursor></a-cursor>
       </a-camera>
-    <a-entity id="boom1" boom-texture gltf-model="#boombox1"  scale="50 50 50" position="0 2 -4">
+    <a-entity id="boom1" boom-texture gltf-model="#boombox1"  scale="50 50 50" position="0 1 -4">
         <a-box class="hiddenTextureSelector" mixin="voxel1" visible="false"></a-box>
         <a-box class="hiddenTextureSelector" mixin="voxel2" visible="false"></a-box>
         <a-box class="hiddenTextureSelector" mixin="voxel3" visible="false"></a-box>
